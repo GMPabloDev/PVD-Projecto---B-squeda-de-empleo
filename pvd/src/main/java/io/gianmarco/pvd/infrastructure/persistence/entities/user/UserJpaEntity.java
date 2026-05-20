@@ -43,21 +43,25 @@ public class UserJpaEntity {
 
     private String password;
 
+    @Column(nullable = false)
     private Boolean emailVerified = false;
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "role")
-    private Set<String> roles = new HashSet<>(Set.of("NORMAL"));
+    @Column(name = "role", nullable = false)
+    private Set<String> roles = new HashSet<>();
 
+    @Column(nullable = false)
     private Boolean disabled = false;
 
     @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
     @UpdateTimestamp
+    @Column(nullable = false)
     private Instant updatedAt;
 
     @Version
-    private Long version; 
+    private Long version;
 }

@@ -1,6 +1,7 @@
 package io.gianmarco.pvd.domain.entities;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -11,8 +12,8 @@ public class User {
     private final String email;
     private String name;
     private String password;
-    private boolean emailVerified;
-    private boolean disabled;
+    private boolean emailVerified = false;
+    private boolean disabled = false;
     private final Set<String> roles;
     private final Instant createdAt;
     private Instant updatedAt;
@@ -31,6 +32,7 @@ public class User {
         this.emailVerified = false;
         this.disabled = false;
         this.roles = new HashSet<>();
+        this.roles.add("NORMAL");
         this.createdAt = createdAt;
         this.updatedAt = Instant.now();
     }
@@ -60,7 +62,9 @@ public class User {
         user.emailVerified = emailVerified;
         user.disabled = disabled;
         user.roles.clear();
-        user.roles.addAll(roles);
+        if (roles != null) {
+            user.roles.addAll(new HashSet<>(roles));
+        }
         user.updatedAt = updatedAt;
         return user;
     }
@@ -76,12 +80,36 @@ public class User {
     }
 
     public void changePassword(String hashedPassword) {
+        validatePassword(hashedPassword);
         this.password = hashedPassword;
         touch();
     }
 
+    public void changeName(String name) {
+        validateName(name);
+        this.name = name;
+        touch();
+    }
+
     public void addRole(String role) {
-        roles.add(role);
+        if (role == null || role.isBlank()) {
+            throw new IllegalArgumentException("Invalid role");
+        }
+        roles.add(role.toUpperCase());
+        touch();
+    }
+
+    public void removeRole(String role) {
+
+        if (role == null || role.isBlank()) {
+            return;
+        }
+
+        if (role.equalsIgnoreCase("NORMAL")) {
+            throw new IllegalStateException("Cannot remove NORMAL role");
+        }
+
+        roles.remove(role.toUpperCase());
         touch();
     }
 
@@ -98,8 +126,8 @@ public class User {
     }
 
     private static void validatePassword(String password) {
-        if (password == null || password.length() < 60) {
-            throw new IllegalArgumentException("Password must be hashed");
+        if (password == null || password.isBlank()) {
+            throw new IllegalArgumentException("Password required");
         }
     }
 
@@ -132,7 +160,7 @@ public class User {
     }
 
     public Set<String> getRoles() {
-        return roles;
+        return Collections.unmodifiableSet(roles);
     }
 
     public Instant getCreatedAt() {
