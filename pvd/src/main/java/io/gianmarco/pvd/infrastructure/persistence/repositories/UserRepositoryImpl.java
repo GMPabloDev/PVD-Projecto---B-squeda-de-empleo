@@ -19,6 +19,7 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<User> findByEmail(String email) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findByEmail'");
+    
     }
 
     @Override
