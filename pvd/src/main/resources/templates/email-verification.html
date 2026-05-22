@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Verifica tu Correo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f4f7f5;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .header {
+            background: #16a34a;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .title {
+            margin: 0;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .otp-box {
+            text-align: center;
+            background: #dcfce7;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+
+        .otp-code {
+            font-size: 40px;
+            font-weight: bold;
+            letter-spacing: 10px;
+            color: #15803d;
+            font-family: "Courier New", monospace;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+            color: #777;
+            background: #f1f5f2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Verificación de Correo</h1>
+        </div>
+
+        <div class="content">
+            <p>Hola <strong>{{USERNAME}}</strong>,</p>
+
+            <p>
+                Para completar tu registro, utiliza el siguiente código de
+                verificación:
+            </p>
+
+            <div class="otp-box">
+                <div class="otp-code">{{CODE}}</div>
+            </div>
+
+            <p>
+                Este código expirará en
+                <strong>{{EXPIRATION_MINUTES}} minutos</strong>.
+            </p>
+
+            <p>
+                Si tú no solicitaste este registro, puedes ignorar este
+                mensaje.
+            </p>
+        </div>
+
+        <div class="footer">
+            © {{CURRENT_YEAR}} - Este correo es automático. Por favor no
+            responder.
+        </div>
+    </div>
+</body>
+
+</html>

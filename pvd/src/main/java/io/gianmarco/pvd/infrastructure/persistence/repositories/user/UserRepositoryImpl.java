@@ -1,4 +1,4 @@
-package io.gianmarco.pvd.infrastructure.persistence.repositories;
+package io.gianmarco.pvd.infrastructure.persistence.repositories.user;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Repository;
 
 import io.gianmarco.pvd.domain.entities.User;
-import io.gianmarco.pvd.domain.repositories.UserRepository;
+import io.gianmarco.pvd.domain.repositories.user.UserRepository;
 import io.gianmarco.pvd.infrastructure.mappers.user.UserMapper;
 import io.gianmarco.pvd.infrastructure.persistence.adapters.UserJpaRepositoryAdapter;
 import io.gianmarco.pvd.infrastructure.persistence.entities.user.UserJpaEntity;

@@ -7,8 +7,12 @@ import java.security.SecureRandom;
 
 import org.springframework.stereotype.Service;
 
+import io.gianmarco.pvd.application.services.OtpService;
+
 @Service
-public class OtpServiceImpl {
+public class OtpServiceImpl implements OtpService {
+
+    @Override
     public String generate(int length) {
         SecureRandom random = new SecureRandom();
         StringBuilder otp = new StringBuilder();
@@ -19,6 +23,7 @@ public class OtpServiceImpl {
         return otp.toString();
     }
 
+    @Override
     public String hash(String otp) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -38,6 +43,7 @@ public class OtpServiceImpl {
         }
     }
 
+    @Override
     public boolean verify(String otp, String hashedOtp) {
         return hash(otp).equals(hashedOtp);
     }

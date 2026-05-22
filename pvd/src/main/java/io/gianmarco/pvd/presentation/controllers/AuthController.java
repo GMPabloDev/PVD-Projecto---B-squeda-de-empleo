@@ -1,6 +1,7 @@
 package io.gianmarco.pvd.presentation.controllers;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ public class AuthController {
         this.createUserUseCase = createUserUseCase;
     }
 
+    @PostMapping("/register")
     public ResponseEntity<ApiResponse<RegisterUserOutput>> register(
             @Valid @RequestBody RegisterUserRequest request) {
         RegisterUserInput input = new RegisterUserInput(request.name(), request.email(), request.password());

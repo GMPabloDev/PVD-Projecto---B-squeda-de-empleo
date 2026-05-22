@@ -1,4 +1,4 @@
-package io.gianmarco.pvd.domain.repositories;
+package io.gianmarco.pvd.domain.repositories.user;
 
 import java.util.Optional;
 import java.util.UUID;

@@ -23,8 +23,8 @@ public class UserMapper {
                 entity.getName(),
                 entity.getEmail(),
                 entity.getPassword(),
-                entity.getEmailVerified() != null ? entity.getEmailVerified() : false,
-                entity.getDisabled() != null ? entity.getDisabled() : false,
+                Boolean.TRUE.equals(entity.getEmailVerified()), // Más seguro
+                Boolean.TRUE.equals(entity.getDisabled()),
                 entity.getRoles() != null ? new HashSet<>(entity.getRoles()) : new HashSet<>(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt());
