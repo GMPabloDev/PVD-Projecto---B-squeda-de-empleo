@@ -1,5 +1,6 @@
 package io.gianmarco.pvd.infrastructure.security;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.core.AuthenticationException;
 
 import io.gianmarco.pvd.application.services.TokenService;
 import jakarta.servlet.FilterChain;
@@ -62,8 +64,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
+            filterChain.doFilter(request, response);
         } catch (Exception e) {
-            // TODO: handle exception
+            authEntryPoint.commence(request, response, new AuthenticationException("Invalid token") {
+            });
         }
     }
 }

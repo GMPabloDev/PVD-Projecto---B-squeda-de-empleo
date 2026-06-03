@@ -41,5 +41,6 @@ public class UserMapper {
         target.setEmailVerified(source.isEmailVerified());
         target.setDisabled(source.isDisabled());
         target.setRoles(new HashSet<>(source.getRoles()));
+     
     }
 }

@@ -63,5 +63,5 @@ public class UserJpaEntity {
     private Instant updatedAt;
 
     @Version
-    private Long version;
+    private long version;
 }
