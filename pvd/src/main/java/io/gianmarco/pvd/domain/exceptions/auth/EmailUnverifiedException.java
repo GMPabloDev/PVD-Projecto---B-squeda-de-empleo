@@ -7,7 +7,7 @@ public class EmailUnverifiedException extends DomainException {
 
     public EmailUnverifiedException() {
         super(
-            "Email not verified for user with email $email",
+            "Email not verified.",
             "Por favor verifica tu correo electrónico antes de iniciar sesión",
             ErrorType.UNAUTHORIZED
         );

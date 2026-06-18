@@ -32,9 +32,13 @@ public class OtpRepositoryImpl implements OtpRepository {
             entity = jpaRepository.findById(otp.getId())
                     .orElseThrow(() -> new IllegalStateException(
                             "Otp not found for update: " + otp.getId()));
-            mapper.copy(otp, entity, userJpaRepository);
+            mapper.copy(otp, entity);
         } else {
-            entity = mapper.toJpa(otp, userJpaRepository);
+            entity = mapper.toJpa(otp);
+        }
+
+        if (otp.getUserId() != null) {
+            entity.setUser(userJpaRepository.getReferenceById(otp.getUserId()));
         }
 
         OtpJpaEntity saved = jpaRepository.save(entity);

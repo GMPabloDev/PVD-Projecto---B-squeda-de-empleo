@@ -52,6 +52,7 @@ public class EmailServiceImpl implements EmailService {
             helper.setText(htmlBody, true);
             mailSender.send(message);
         } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send email to: " + to, e);
         }
     }
 

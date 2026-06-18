@@ -42,10 +42,12 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
 
     @Override
     public RegisterUserOutput execute(RegisterUserInput input) {
-        Optional<User> existingUser = userRepository.findByEmail(input.email());
+        String normalizedEmail = input.email().trim().toLowerCase();
+
+        Optional<User> existingUser = userRepository.findByEmail(normalizedEmail);
 
         if (existingUser.isPresent() && existingUser.get().isEmailVerified()) {
-            throw new UserAlreadyExistsException(input.email());
+            throw new UserAlreadyExistsException(normalizedEmail);
         }
 
         String otp = otpService.generate(6);
@@ -54,21 +56,21 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
 
         String hashedPassword = hasherService.hash(input.password());
 
-        User user = existingUser.orElseGet(() -> User.create(input.name(), input.email(), hashedPassword));
+        User user = existingUser.orElseGet(() -> User.create(input.name(), normalizedEmail, hashedPassword));
         User savedUser = userRepository.save(user);
 
-        otpRepository.deleteByOwner(input.email(), OtpType.EMAIL_VERIFICATION);
+        otpRepository.deleteByOwner(normalizedEmail, OtpType.EMAIL_VERIFICATION);
 
         Otp otpEntity = Otp.create(
                 savedUser.getId(),
-                input.email(),
+                normalizedEmail,
                 otpHash,
                 OtpType.EMAIL_VERIFICATION,
                 expiresAt);
 
         otpRepository.save(otpEntity);
 
-        emailService.sendEmailVerification(input.email(), input.name(), otp);
+        emailService.sendEmailVerification(normalizedEmail, input.name(), otp);
 
         return new RegisterUserOutput(
                 "An email was sent to confirm your account.",

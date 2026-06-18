@@ -70,5 +70,5 @@ public class OtpJpaEntity {
     private Instant expiresAt;
 
     @Version
-    private Long version; // ← AÑADIR
+    private Long version;
 }

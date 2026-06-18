@@ -74,8 +74,8 @@ public class ResetPasswordUseCaseImpl implements ResetPasswordUseCase {
         }
 
         String hashedPassword = hashService.hash(input.newPassword());
-        user.changePassword(hashedPassword); // 🔥 dominio
-        userRepository.save(user); // 🔥 persistencia
+        user.changePassword(hashedPassword);
+        userRepository.save(user);
 
         otpRepository.deleteById(otp.getId());
         refreshTokenRepository.deleteAllByUser(user.getId());

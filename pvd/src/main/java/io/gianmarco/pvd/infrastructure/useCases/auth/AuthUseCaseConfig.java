@@ -2,6 +2,7 @@ package io.gianmarco.pvd.infrastructure.useCases.auth;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.gianmarco.pvd.application.services.EmailService;
 import io.gianmarco.pvd.application.services.HashService;
@@ -12,10 +13,14 @@ import io.gianmarco.pvd.application.useCases.impl.auth.ForgotPasswordUseCaseImpl
 import io.gianmarco.pvd.application.useCases.impl.auth.ResendOtpUseCaseImpl;
 import io.gianmarco.pvd.application.useCases.impl.auth.ResetPasswordUseCaseImpl;
 import io.gianmarco.pvd.application.useCases.impl.auth.VerifyEmailUseCaseImpl;
+import io.gianmarco.pvd.application.useCases.impl.auth.GetCurrentUserUseCaseImpl;
 import io.gianmarco.pvd.application.useCases.impl.auth.LoginUserUseCaseImpl;
+import io.gianmarco.pvd.application.useCases.impl.auth.RefreshTokenUseCaseImpl;
 import io.gianmarco.pvd.application.useCases.interfaces.auth.CreateUserUseCase;
 import io.gianmarco.pvd.application.useCases.interfaces.auth.ForgotPasswordUseCase;
+import io.gianmarco.pvd.application.useCases.interfaces.auth.GetCurrentUserUseCase;
 import io.gianmarco.pvd.application.useCases.interfaces.auth.LoginUserUseCase;
+import io.gianmarco.pvd.application.useCases.interfaces.auth.RefreshTokenUseCase;
 import io.gianmarco.pvd.application.useCases.interfaces.auth.ResendOtpUseCase;
 import io.gianmarco.pvd.application.useCases.interfaces.auth.ResetPasswordUseCase;
 import io.gianmarco.pvd.application.useCases.interfaces.auth.VerifyEmailUseCase;
@@ -28,6 +33,7 @@ import io.gianmarco.pvd.domain.repositories.user.UserRepository;
 public class AuthUseCaseConfig {
 
     @Bean
+    @Transactional
     public CreateUserUseCase createUserUseCase(
             UserRepository userRepository,
             OtpRepository otpRepository,
@@ -43,6 +49,7 @@ public class AuthUseCaseConfig {
     }
 
     @Bean
+    @Transactional
     public LoginUserUseCase loginUserUseCase(
             UserRepository userRepository,
             SessionRepository sessionRepository,
@@ -58,6 +65,7 @@ public class AuthUseCaseConfig {
     }
 
     @Bean
+    @Transactional
     public VerifyEmailUseCase verifyEmailUseCase(
             UserRepository userRepository,
             OtpRepository otpRepository,
@@ -75,6 +83,7 @@ public class AuthUseCaseConfig {
     }
 
     @Bean
+    @Transactional
     public ResendOtpUseCase resendOtpUseCase(
             UserRepository userRepository,
             OtpRepository otpRepository,
@@ -88,6 +97,7 @@ public class AuthUseCaseConfig {
     }
 
     @Bean
+    @Transactional
     public ForgotPasswordUseCase forgotPasswordUseCase(
             UserRepository userRepository,
             OtpRepository otpRepository,
@@ -101,6 +111,7 @@ public class AuthUseCaseConfig {
     }
 
     @Bean
+    @Transactional
     public ResetPasswordUseCase resetPasswordUseCase(
             UserRepository userRepository,
             RefreshTokenRepository refreshTokenRepository,
@@ -113,5 +124,25 @@ public class AuthUseCaseConfig {
                 otpRepository,
                 otpService,
                 hashService);
+    }
+
+    @Bean
+    public GetCurrentUserUseCase getCurrentUserUseCase(
+            UserRepository userRepository) {
+        return new GetCurrentUserUseCaseImpl(userRepository);
+    }
+
+    @Bean
+    @Transactional
+    public RefreshTokenUseCase refreshTokenUseCase(
+            TokenService tokenService,
+            RefreshTokenRepository refreshTokenRepository,
+            UserRepository userRepository,
+            SessionRepository sessionRepository) {
+        return new RefreshTokenUseCaseImpl(
+                tokenService,
+                refreshTokenRepository,
+                userRepository,
+                sessionRepository);
     }
 }

@@ -1,6 +1,8 @@
 package io.gianmarco.pvd.presentation.controllers;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,8 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.gianmarco.pvd.application.ports.auth.forgotPassword.ForgotPasswordInput;
 import io.gianmarco.pvd.application.ports.auth.forgotPassword.ForgotPasswordOutput;
+import io.gianmarco.pvd.application.ports.auth.getCurrentUser.GetCurrentUserInput;
+import io.gianmarco.pvd.application.ports.auth.getCurrentUser.GetCurrentUserOutput;
 import io.gianmarco.pvd.application.ports.auth.login.LoginUserInput;
 import io.gianmarco.pvd.application.ports.auth.login.LoginUserOutput;
+import io.gianmarco.pvd.application.ports.auth.refresh.RefreshTokenInput;
+import io.gianmarco.pvd.application.ports.auth.refresh.RefreshTokenOutput;
 import io.gianmarco.pvd.application.ports.auth.register.RegisterUserInput;
 import io.gianmarco.pvd.application.ports.auth.register.RegisterUserOutput;
 import io.gianmarco.pvd.application.ports.auth.resendOtp.ResendOtpInput;
@@ -20,13 +26,16 @@ import io.gianmarco.pvd.application.ports.auth.resetPassword.ResetPasswordInput;
 import io.gianmarco.pvd.application.ports.auth.resetPassword.ResetPasswordOutput;
 import io.gianmarco.pvd.application.useCases.interfaces.auth.CreateUserUseCase;
 import io.gianmarco.pvd.application.useCases.interfaces.auth.ForgotPasswordUseCase;
+import io.gianmarco.pvd.application.useCases.interfaces.auth.GetCurrentUserUseCase;
 import io.gianmarco.pvd.application.useCases.interfaces.auth.LoginUserUseCase;
+import io.gianmarco.pvd.application.useCases.interfaces.auth.RefreshTokenUseCase;
 import io.gianmarco.pvd.application.useCases.interfaces.auth.ResendOtpUseCase;
 import io.gianmarco.pvd.application.useCases.interfaces.auth.ResetPasswordUseCase;
 import io.gianmarco.pvd.application.useCases.interfaces.auth.VerifyEmailUseCase;
 import io.gianmarco.pvd.presentation.dtos.ApiResponse;
 import io.gianmarco.pvd.presentation.dtos.auth.ForgotPasswordRequest;
 import io.gianmarco.pvd.presentation.dtos.auth.LoginUserRequest;
+import io.gianmarco.pvd.presentation.dtos.auth.RefreshTokenRequest;
 import io.gianmarco.pvd.presentation.dtos.auth.RegisterUserRequest;
 import io.gianmarco.pvd.presentation.dtos.auth.ResendOtpRequest;
 import io.gianmarco.pvd.presentation.dtos.auth.ResetPasswordRequest;
@@ -43,6 +52,8 @@ public class AuthController {
     private final ResendOtpUseCase resendOtpUseCase;
     private final ResetPasswordUseCase resetPasswordUseCase;
     private final ForgotPasswordUseCase forgotPasswordUseCase;
+    private final GetCurrentUserUseCase getCurrentUserUseCase;
+    private final RefreshTokenUseCase refreshTokenUseCase;
 
     public AuthController(
             CreateUserUseCase createUserUseCase,
@@ -50,13 +61,17 @@ public class AuthController {
             LoginUserUseCase loginUserUseCase,
             ResendOtpUseCase resendOtpUseCase,
             ResetPasswordUseCase resetPasswordUseCase,
-            ForgotPasswordUseCase forgotPasswordUseCase) {
+            ForgotPasswordUseCase forgotPasswordUseCase,
+            GetCurrentUserUseCase getCurrentUserUseCase,
+            RefreshTokenUseCase refreshTokenUseCase) {
         this.createUserUseCase = createUserUseCase;
         this.verifyEmailUseCase = verifyEmailUseCase;
         this.loginUserUseCase = loginUserUseCase;
         this.resendOtpUseCase = resendOtpUseCase;
         this.resetPasswordUseCase = resetPasswordUseCase;
         this.forgotPasswordUseCase = forgotPasswordUseCase;
+        this.getCurrentUserUseCase = getCurrentUserUseCase;
+        this.refreshTokenUseCase = refreshTokenUseCase;
     }
 
     @PostMapping("/register")
@@ -108,5 +123,22 @@ public class AuthController {
         ForgotPasswordInput input = new ForgotPasswordInput(request.email());
         ForgotPasswordOutput output = forgotPasswordUseCase.execute(input);
         return ResponseEntity.ok(ApiResponse.success(output.message()));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<GetCurrentUserOutput>> me(
+            Authentication authentication) {
+        String userId = authentication.getName();
+        GetCurrentUserInput input = new GetCurrentUserInput(java.util.UUID.fromString(userId));
+        GetCurrentUserOutput output = getCurrentUserUseCase.execute(input);
+        return ResponseEntity.ok(ApiResponse.success(output));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<RefreshTokenOutput>> refresh(
+            @Valid @RequestBody RefreshTokenRequest request) {
+        RefreshTokenInput input = new RefreshTokenInput(request.refreshToken());
+        RefreshTokenOutput output = refreshTokenUseCase.execute(input);
+        return ResponseEntity.ok(ApiResponse.success(output));
     }
 }

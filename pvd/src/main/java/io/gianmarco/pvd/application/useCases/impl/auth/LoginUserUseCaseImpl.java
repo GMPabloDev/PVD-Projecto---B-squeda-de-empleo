@@ -20,11 +20,11 @@ import io.gianmarco.pvd.domain.repositories.user.UserRepository;
 
 public class LoginUserUseCaseImpl implements LoginUserUseCase {
 
-    public final UserRepository userRepository;
-    public final SessionRepository sessionRepository;
-    public final RefreshTokenRepository refreshTokenRepository;
-    public final TokenService tokenService;
-    public final HashService hashService;
+    private final UserRepository userRepository;
+    private final SessionRepository sessionRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final TokenService tokenService;
+    private final HashService hashService;
 
     public LoginUserUseCaseImpl(
             UserRepository userRepository,

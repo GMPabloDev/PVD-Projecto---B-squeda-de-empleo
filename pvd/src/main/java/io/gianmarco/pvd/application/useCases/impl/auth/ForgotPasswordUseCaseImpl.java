@@ -76,7 +76,7 @@ public class ForgotPasswordUseCaseImpl implements ForgotPasswordUseCase {
         otpRepository.save(newOtp);
 
         try {
-            emailService.sendForgotPassword(normalizedEmail, otp, otpHash);
+            emailService.sendForgotPassword(normalizedEmail, user.getName(), otp);
 
             return new ForgotPasswordOutput(
                     "If an account with that email exists, a password reset OTP has been sent.",

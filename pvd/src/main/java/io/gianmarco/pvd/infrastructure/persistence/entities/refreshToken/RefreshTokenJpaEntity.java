@@ -53,5 +53,5 @@ public class RefreshTokenJpaEntity {
     private SessionJpaEntity session;
 
     @Version
-    private Long version; // ← AÑADIR
+    private Long version;
 }

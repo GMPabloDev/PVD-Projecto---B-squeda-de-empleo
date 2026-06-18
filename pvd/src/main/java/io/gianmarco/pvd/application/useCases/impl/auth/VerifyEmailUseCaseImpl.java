@@ -52,16 +52,18 @@ public class VerifyEmailUseCaseImpl implements VerifyEmailUseCase {
 
     @Override
     public VerifyEmailOutput execute(VerifyEmailInput input) {
+        String normalizedEmail = input.email().trim().toLowerCase();
+
         User user = userRepository
-                .findByEmail(input.email())
-                .orElseThrow(() -> new UserNotFoundException(input.email()));
+                .findByEmail(normalizedEmail)
+                .orElseThrow(() -> new UserNotFoundException(normalizedEmail));
 
         if (user.isEmailVerified()) {
             throw new EmailAlreadyVerifiedException();
         }
 
         Otp otp = otpRepository
-                .findLatestByEmailAndType(input.email(), OtpType.EMAIL_VERIFICATION)
+                .findLatestByEmailAndType(normalizedEmail, OtpType.EMAIL_VERIFICATION)
                 .orElseThrow(() -> new OtpNotFoundException());
 
         if (otp.isExpired()) {
@@ -88,18 +90,15 @@ public class VerifyEmailUseCaseImpl implements VerifyEmailUseCase {
         userRepository.save(user);
         otpRepository.deleteById(otp.getId());
 
-        // 🔐 8. Generar tokens
         String accessToken = tokenService.generateAccessToken(user);
         String refreshTokenValue = tokenService.generateRefreshToken(
                 user.getId());
 
-        // 📱 9. Crear sesión
         Instant expiresAt = Instant.now().plus(SESSION_DAYS, ChronoUnit.DAYS);
 
         Session session = Session.create(user.getId(), expiresAt);
         Session savedSession = sessionRepository.save(session);
 
-        // ♻️ 10. Guardar refresh token
         RefreshToken refreshToken = RefreshToken.create(
                 user.getId(),
                 savedSession.getId(),

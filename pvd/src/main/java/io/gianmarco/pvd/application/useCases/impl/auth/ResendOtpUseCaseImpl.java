@@ -22,10 +22,10 @@ public class ResendOtpUseCaseImpl implements ResendOtpUseCase {
     private static final int RESEND_COOLDOWN_MINUTES = 2;
     private static final int OTP_EXPIRATION_MINUTES = 15;
 
-    public final UserRepository userRepository;
-    public final OtpRepository otpRepository;
-    public final OtpService otpService;
-    public final EmailService emailService;
+    private final UserRepository userRepository;
+    private final OtpRepository otpRepository;
+    private final OtpService otpService;
+    private final EmailService emailService;
 
     public ResendOtpUseCaseImpl(
             UserRepository userRepository,

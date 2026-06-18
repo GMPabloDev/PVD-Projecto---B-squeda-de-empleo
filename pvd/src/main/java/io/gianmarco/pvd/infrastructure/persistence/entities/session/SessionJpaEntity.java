@@ -67,5 +67,5 @@ public class SessionJpaEntity {
     private UserJpaEntity user;
 
     @Version
-    private Long version; // ← AÑADIR
+    private Long version;
 }
