@@ -21,7 +21,19 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User save(User user) {
-        UserJpaEntity entity = mapper.toJpa(user);
+        UserJpaEntity entity;
+
+        if (user.getId() != null) {
+            // Si ya existe en BD, cargamos la entidad gestionada y la actualizamos
+            entity = jpaRepository.findById(user.getId())
+                    .orElseThrow(() -> new IllegalStateException(
+                            "User not found for update: " + user.getId()));
+            mapper.copy(user, entity); // actualiza los campos sobre la entidad gestionada
+        } else {
+            // Es nuevo: creamos la entidad desde cero
+            entity = mapper.toJpa(user);
+        }
+
         UserJpaEntity saved = jpaRepository.save(entity);
         return mapper.toDomain(saved);
     }

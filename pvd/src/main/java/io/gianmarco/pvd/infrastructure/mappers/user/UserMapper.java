@@ -27,7 +27,9 @@ public class UserMapper {
                 Boolean.TRUE.equals(entity.getDisabled()),
                 entity.getRoles() != null ? new HashSet<>(entity.getRoles()) : new HashSet<>(),
                 entity.getCreatedAt(),
-                entity.getUpdatedAt());
+                entity.getUpdatedAt(),
+                entity.getVersion()
+            );
     }
 
     // ✅ Método adicional útil para actualizaciones
@@ -41,6 +43,6 @@ public class UserMapper {
         target.setEmailVerified(source.isEmailVerified());
         target.setDisabled(source.isDisabled());
         target.setRoles(new HashSet<>(source.getRoles()));
-     
+        target.setVersion(source.getVersion());
     }
 }

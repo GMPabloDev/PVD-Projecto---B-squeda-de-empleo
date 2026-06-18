@@ -1,4 +1,4 @@
-package io.gianmarco.pvd.application.useCases.impl;
+package io.gianmarco.pvd.application.useCases.impl.auth;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -9,7 +9,7 @@ import io.gianmarco.pvd.application.ports.auth.register.RegisterUserOutput;
 import io.gianmarco.pvd.application.services.EmailService;
 import io.gianmarco.pvd.application.services.HashService;
 import io.gianmarco.pvd.application.services.OtpService;
-import io.gianmarco.pvd.application.useCases.interfaces.CreateUserUseCase;
+import io.gianmarco.pvd.application.useCases.interfaces.auth.CreateUserUseCase;
 import io.gianmarco.pvd.domain.entities.Otp;
 import io.gianmarco.pvd.domain.entities.OtpType;
 import io.gianmarco.pvd.domain.entities.User;

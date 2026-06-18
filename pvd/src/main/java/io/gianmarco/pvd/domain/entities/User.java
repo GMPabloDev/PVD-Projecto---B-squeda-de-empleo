@@ -17,13 +17,16 @@ public class User {
     private final Set<String> roles;
     private final Instant createdAt;
     private Instant updatedAt;
+    private final Long version;
 
     private User(
             UUID id,
             String name,
             String email,
             String password,
-            Instant createdAt) {
+            Instant createdAt,
+            Long version
+        ) {
 
         this.id = id;
         this.name = name;
@@ -35,6 +38,7 @@ public class User {
         this.roles.add("NORMAL");
         this.createdAt = createdAt;
         this.updatedAt = Instant.now();
+        this.version = version;
     }
 
     public static User create(
@@ -45,7 +49,7 @@ public class User {
         validateName(name);
         validateEmail(email);
         validatePassword(hashedPassword);
-        return new User(null, name, email, hashedPassword, Instant.now());
+        return new User(null, name, email, hashedPassword, Instant.now(), null);
     }
 
     public static User restore(
@@ -57,8 +61,9 @@ public class User {
             boolean disabled,
             Set<String> roles,
             Instant createdAt,
-            Instant updatedAt) {
-        User user = new User(id, name, email, password, createdAt);
+            Instant updatedAt,
+            Long version) {
+        User user = new User(id, name, email, password, createdAt, version);
         user.emailVerified = emailVerified;
         user.disabled = disabled;
         user.roles.clear();
@@ -169,5 +174,9 @@ public class User {
 
     public Instant getUpdatedAt() {
         return updatedAt;
+    }
+
+    public Long getVersion() {
+        return version;
     }
 }

@@ -6,14 +6,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.gianmarco.pvd.application.ports.auth.forgotPassword.ForgotPasswordInput;
+import io.gianmarco.pvd.application.ports.auth.forgotPassword.ForgotPasswordOutput;
+import io.gianmarco.pvd.application.ports.auth.login.LoginUserInput;
+import io.gianmarco.pvd.application.ports.auth.login.LoginUserOutput;
 import io.gianmarco.pvd.application.ports.auth.register.RegisterUserInput;
 import io.gianmarco.pvd.application.ports.auth.register.RegisterUserOutput;
+import io.gianmarco.pvd.application.ports.auth.resendOtp.ResendOtpInput;
 import io.gianmarco.pvd.application.ports.auth.verifyEmail.VerifyEmailInput;
 import io.gianmarco.pvd.application.ports.auth.verifyEmail.VerifyEmailOutput;
-import io.gianmarco.pvd.application.useCases.interfaces.CreateUserUseCase;
-import io.gianmarco.pvd.application.useCases.interfaces.VerifyEmailUseCase;
+import io.gianmarco.pvd.application.ports.auth.resendOtp.ResendOtpOutput;
+import io.gianmarco.pvd.application.ports.auth.resetPassword.ResetPasswordInput;
+import io.gianmarco.pvd.application.ports.auth.resetPassword.ResetPasswordOutput;
+import io.gianmarco.pvd.application.useCases.interfaces.auth.CreateUserUseCase;
+import io.gianmarco.pvd.application.useCases.interfaces.auth.ForgotPasswordUseCase;
+import io.gianmarco.pvd.application.useCases.interfaces.auth.LoginUserUseCase;
+import io.gianmarco.pvd.application.useCases.interfaces.auth.ResendOtpUseCase;
+import io.gianmarco.pvd.application.useCases.interfaces.auth.ResetPasswordUseCase;
+import io.gianmarco.pvd.application.useCases.interfaces.auth.VerifyEmailUseCase;
 import io.gianmarco.pvd.presentation.dtos.ApiResponse;
+import io.gianmarco.pvd.presentation.dtos.auth.ForgotPasswordRequest;
+import io.gianmarco.pvd.presentation.dtos.auth.LoginUserRequest;
 import io.gianmarco.pvd.presentation.dtos.auth.RegisterUserRequest;
+import io.gianmarco.pvd.presentation.dtos.auth.ResendOtpRequest;
+import io.gianmarco.pvd.presentation.dtos.auth.ResetPasswordRequest;
 import io.gianmarco.pvd.presentation.dtos.auth.VerifyEmailRequest;
 import jakarta.validation.Valid;
 
@@ -23,12 +39,24 @@ public class AuthController {
 
     private final CreateUserUseCase createUserUseCase;
     private final VerifyEmailUseCase verifyEmailUseCase;
+    private final LoginUserUseCase loginUserUseCase;
+    private final ResendOtpUseCase resendOtpUseCase;
+    private final ResetPasswordUseCase resetPasswordUseCase;
+    private final ForgotPasswordUseCase forgotPasswordUseCase;
 
     public AuthController(
             CreateUserUseCase createUserUseCase,
-            VerifyEmailUseCase verifyEmailUseCase) {
+            VerifyEmailUseCase verifyEmailUseCase,
+            LoginUserUseCase loginUserUseCase,
+            ResendOtpUseCase resendOtpUseCase,
+            ResetPasswordUseCase resetPasswordUseCase,
+            ForgotPasswordUseCase forgotPasswordUseCase) {
         this.createUserUseCase = createUserUseCase;
         this.verifyEmailUseCase = verifyEmailUseCase;
+        this.loginUserUseCase = loginUserUseCase;
+        this.resendOtpUseCase = resendOtpUseCase;
+        this.resetPasswordUseCase = resetPasswordUseCase;
+        this.forgotPasswordUseCase = forgotPasswordUseCase;
     }
 
     @PostMapping("/register")
@@ -45,5 +73,40 @@ public class AuthController {
         VerifyEmailInput input = new VerifyEmailInput(request.email(), request.otp());
         VerifyEmailOutput output = verifyEmailUseCase.execute(input);
         return ResponseEntity.ok(ApiResponse.success(output));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<LoginUserOutput>> login(
+            @Valid @RequestBody LoginUserRequest request) {
+        LoginUserInput input = new LoginUserInput(request.email(), request.password());
+        LoginUserOutput output = loginUserUseCase.execute(input);
+        return ResponseEntity.ok(ApiResponse.success(output));
+    }
+
+    @PostMapping("/resend-otp")
+    public ResponseEntity<ApiResponse<ResendOtpOutput>> resendOtp(
+            @Valid @RequestBody ResendOtpRequest request) {
+        ResendOtpInput input = new ResendOtpInput(request.email(), request.type());
+        ResendOtpOutput output = resendOtpUseCase.execute(input);
+        return ResponseEntity.ok(ApiResponse.success(output));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ApiResponse<String>> resetPassword(
+            @Valid @RequestBody ResetPasswordRequest request) {
+        ResetPasswordInput input = new ResetPasswordInput(
+                request.email(),
+                request.otp(),
+                request.newPassword());
+        ResetPasswordOutput output = resetPasswordUseCase.execute(input);
+        return ResponseEntity.ok(ApiResponse.success(output.message()));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse<String>> forgotPassword(
+            @Valid @RequestBody ForgotPasswordRequest request) {
+        ForgotPasswordInput input = new ForgotPasswordInput(request.email());
+        ForgotPasswordOutput output = forgotPasswordUseCase.execute(input);
+        return ResponseEntity.ok(ApiResponse.success(output.message()));
     }
 }

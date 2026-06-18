@@ -1,4 +1,4 @@
-package io.gianmarco.pvd.application.useCases.interfaces;
+package io.gianmarco.pvd.application.useCases.interfaces.auth;
 
 import io.gianmarco.pvd.application.ports.auth.verifyEmail.VerifyEmailInput;
 import io.gianmarco.pvd.application.ports.auth.verifyEmail.VerifyEmailOutput;

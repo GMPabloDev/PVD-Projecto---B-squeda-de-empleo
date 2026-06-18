@@ -11,6 +11,7 @@ import io.gianmarco.pvd.domain.entities.OtpType;
 import io.gianmarco.pvd.domain.repositories.otp.OtpRepository;
 import io.gianmarco.pvd.infrastructure.mappers.otp.OtpMapper;
 import io.gianmarco.pvd.infrastructure.persistence.adapters.OtpJpaRepositoryAdapter;
+import io.gianmarco.pvd.infrastructure.persistence.adapters.UserJpaRepositoryAdapter;
 import io.gianmarco.pvd.infrastructure.persistence.entities.otp.OtpJpaEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +22,21 @@ public class OtpRepositoryImpl implements OtpRepository {
 
     private final OtpJpaRepositoryAdapter jpaRepository;
     private final OtpMapper mapper;
+    private final UserJpaRepositoryAdapter userJpaRepository;
 
     @Override
     public Otp save(Otp otp) {
-        OtpJpaEntity entity = mapper.toJpa(otp);
+        OtpJpaEntity entity;
+
+        if (otp.getId() != null) {
+            entity = jpaRepository.findById(otp.getId())
+                    .orElseThrow(() -> new IllegalStateException(
+                            "Otp not found for update: " + otp.getId()));
+            mapper.copy(otp, entity, userJpaRepository);
+        } else {
+            entity = mapper.toJpa(otp, userJpaRepository);
+        }
+
         OtpJpaEntity saved = jpaRepository.save(entity);
         return mapper.toDomain(saved);
     }
