@@ -3,6 +3,8 @@ package io.gianmarco.pvd.application.useCases.impl.auth;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import io.gianmarco.pvd.application.ports.auth.forgotPassword.ForgotPasswordInput;
 import io.gianmarco.pvd.application.ports.auth.forgotPassword.ForgotPasswordOutput;
 import io.gianmarco.pvd.application.services.EmailService;
@@ -38,6 +40,7 @@ public class ForgotPasswordUseCaseImpl implements ForgotPasswordUseCase {
     }
 
     @Override
+    @Transactional
     public ForgotPasswordOutput execute(ForgotPasswordInput input) {
         String normalizedEmail = input.email().trim().toLowerCase();
 

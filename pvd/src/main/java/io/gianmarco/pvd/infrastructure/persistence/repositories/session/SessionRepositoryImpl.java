@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.gianmarco.pvd.domain.entities.Session;
 import io.gianmarco.pvd.domain.repositories.session.SessionRepository;
@@ -23,6 +24,7 @@ public class SessionRepositoryImpl implements SessionRepository {
     private final SessionMapper mapper;
 
     @Override
+    @Transactional
     public Session save(Session session) {
         SessionJpaEntity entity = mapper.toJpa(session);
 

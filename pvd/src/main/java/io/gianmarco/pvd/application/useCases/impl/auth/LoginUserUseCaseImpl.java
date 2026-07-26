@@ -3,6 +3,8 @@ package io.gianmarco.pvd.application.useCases.impl.auth;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import io.gianmarco.pvd.application.ports.auth.login.LoginUserInput;
 import io.gianmarco.pvd.application.ports.auth.login.LoginUserOutput;
 import io.gianmarco.pvd.application.services.HashService;
@@ -40,6 +42,7 @@ public class LoginUserUseCaseImpl implements LoginUserUseCase {
     }
 
     @Override
+    @Transactional
     public LoginUserOutput execute(LoginUserInput input) {
         User user = userRepository
                 .findByEmail(input.email())

@@ -31,8 +31,8 @@ import io.gianmarco.pvd.infrastructure.persistence.entities.user.UserJpaEntity;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "otps", indexes = { // ✅ ÍNDICES
-        @Index(name = "idx_otp_email", columnList = "otp, email"),
+@Table(name = "otps", indexes = {
+        @Index(name = "idx_otp_email_type", columnList = "email, type"),
         @Index(name = "idx_otp_expires_at", columnList = "expires_at")
 })
 public class OtpJpaEntity {

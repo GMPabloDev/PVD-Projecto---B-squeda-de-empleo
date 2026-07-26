@@ -1,5 +1,7 @@
 package io.gianmarco.pvd.infrastructure.mappers.refreshToken;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Component;
 
 import io.gianmarco.pvd.domain.entities.RefreshToken;
@@ -20,10 +22,12 @@ public class RefreshTokenMapper {
     }
 
     public RefreshToken toDomain(RefreshTokenJpaEntity entityJpa) {
+        UUID userId = entityJpa.getUser() != null ? entityJpa.getUser().getId() : null;
+        UUID sessionId = entityJpa.getSession() != null ? entityJpa.getSession().getId() : null;
         return RefreshToken.restore(
                 entityJpa.getId(),
-                entityJpa.getUser().getId(),
-                entityJpa.getSession().getId(),
+                userId,
+                sessionId,
                 entityJpa.getToken(),
                 entityJpa.getExpiresAt(),
                 entityJpa.getRevokedAt());

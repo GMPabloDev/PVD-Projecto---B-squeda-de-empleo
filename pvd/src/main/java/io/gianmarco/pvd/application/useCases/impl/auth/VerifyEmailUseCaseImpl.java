@@ -3,6 +3,8 @@ package io.gianmarco.pvd.application.useCases.impl.auth;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import io.gianmarco.pvd.application.ports.auth.verifyEmail.VerifyEmailInput;
 import io.gianmarco.pvd.application.ports.auth.verifyEmail.VerifyEmailOutput;
 import io.gianmarco.pvd.application.services.OtpService;
@@ -51,6 +53,7 @@ public class VerifyEmailUseCaseImpl implements VerifyEmailUseCase {
     }
 
     @Override
+    @Transactional
     public VerifyEmailOutput execute(VerifyEmailInput input) {
         String normalizedEmail = input.email().trim().toLowerCase();
 

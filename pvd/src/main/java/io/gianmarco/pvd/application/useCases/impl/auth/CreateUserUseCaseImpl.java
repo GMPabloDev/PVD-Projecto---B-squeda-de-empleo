@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import io.gianmarco.pvd.application.ports.auth.register.RegisterUserInput;
 import io.gianmarco.pvd.application.ports.auth.register.RegisterUserOutput;
 import io.gianmarco.pvd.application.services.EmailService;
@@ -41,6 +43,7 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
     }
 
     @Override
+    @Transactional
     public RegisterUserOutput execute(RegisterUserInput input) {
         String normalizedEmail = input.email().trim().toLowerCase();
 
@@ -56,7 +59,13 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
 
         String hashedPassword = hasherService.hash(input.password());
 
-        User user = existingUser.orElseGet(() -> User.create(input.name(), normalizedEmail, hashedPassword));
+        User user;
+        if (existingUser.isPresent()) {
+            user = existingUser.get();
+            user.changePassword(hashedPassword);
+        } else {
+            user = User.create(input.name(), normalizedEmail, hashedPassword);
+        }
         User savedUser = userRepository.save(user);
 
         otpRepository.deleteByOwner(normalizedEmail, OtpType.EMAIL_VERIFICATION);

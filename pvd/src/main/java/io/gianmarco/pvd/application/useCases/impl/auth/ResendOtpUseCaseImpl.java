@@ -3,6 +3,8 @@ package io.gianmarco.pvd.application.useCases.impl.auth;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import io.gianmarco.pvd.application.ports.auth.resendOtp.ResendOtpInput;
 import io.gianmarco.pvd.application.ports.auth.resendOtp.ResendOtpOutput;
 import io.gianmarco.pvd.application.services.EmailService;
@@ -39,12 +41,13 @@ public class ResendOtpUseCaseImpl implements ResendOtpUseCase {
     }
 
     @Override
+    @Transactional
     public ResendOtpOutput execute(ResendOtpInput input) {
         String normalizedEmail = input.email().trim().toLowerCase();
         OtpType type = input.type();
 
         User user = userRepository
-                .findByEmail(input.email())
+                .findByEmail(normalizedEmail)
                 .orElseThrow(() -> new UserNotFoundException(normalizedEmail));
 
         if (type == OtpType.EMAIL_VERIFICATION && user.isEmailVerified()) {
@@ -81,7 +84,7 @@ public class ResendOtpUseCaseImpl implements ResendOtpUseCase {
         otpRepository.save(newOtp);
 
         try {
-            emailService.sendEmailVerification(input.email(), user.getName(), otp);
+            emailService.sendEmailVerification(normalizedEmail, user.getName(), otp);
         } catch (Exception e) {
             // rollback lógico
             otpRepository.deleteByOwner(normalizedEmail, type);

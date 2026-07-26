@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 
 import io.gianmarco.pvd.application.services.TokenService;
 import jakarta.servlet.FilterChain;
@@ -51,7 +52,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-            if (auth == null || !auth.isAuthenticated()) {
+            if (auth == null || auth instanceof AnonymousAuthenticationToken) {
                 var userDetails = userDetailsService.loadUserByUsername(
                         userId.toString());
 

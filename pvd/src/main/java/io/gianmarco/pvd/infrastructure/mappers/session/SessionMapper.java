@@ -1,6 +1,8 @@
 package io.gianmarco.pvd.infrastructure.mappers.session;
 
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Component;
 
 import io.gianmarco.pvd.domain.entities.Session;
@@ -19,9 +21,10 @@ public class SessionMapper {
     }
 
     public Session toDomain(SessionJpaEntity entity) {
+        UUID userId = entity.getUser() != null ? entity.getUser().getId() : null;
         return Session.restore(
             entity.getId(),
-            entity.getUser().getId(),
+            userId,
             entity.getIsActive(),
             entity.getLastSeenAt(),
             entity.getExpiresAt()

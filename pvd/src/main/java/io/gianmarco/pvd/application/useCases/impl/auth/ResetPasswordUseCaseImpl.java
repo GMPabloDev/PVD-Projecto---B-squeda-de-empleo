@@ -1,5 +1,7 @@
 package io.gianmarco.pvd.application.useCases.impl.auth;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import io.gianmarco.pvd.application.ports.auth.resetPassword.ResetPasswordInput;
 import io.gianmarco.pvd.application.ports.auth.resetPassword.ResetPasswordOutput;
 import io.gianmarco.pvd.application.services.HashService;
@@ -41,11 +43,12 @@ public class ResetPasswordUseCaseImpl implements ResetPasswordUseCase {
     }
 
     @Override
+    @Transactional
     public ResetPasswordOutput execute(ResetPasswordInput input) {
         String normalizedEmail = input.email().trim().toLowerCase();
 
         User user = userRepository
-                .findByEmail(input.email())
+                .findByEmail(normalizedEmail)
                 .orElseThrow(() -> new UserNotFoundException(normalizedEmail));
 
         Otp otp = otpRepository

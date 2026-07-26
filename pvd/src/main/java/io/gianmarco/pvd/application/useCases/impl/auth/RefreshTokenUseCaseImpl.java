@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import io.gianmarco.pvd.application.ports.auth.refresh.RefreshTokenInput;
 import io.gianmarco.pvd.application.ports.auth.refresh.RefreshTokenOutput;
 import io.gianmarco.pvd.application.services.TokenService;
@@ -38,6 +40,7 @@ public class RefreshTokenUseCaseImpl implements RefreshTokenUseCase {
     }
 
     @Override
+    @Transactional
     public RefreshTokenOutput execute(RefreshTokenInput input) {
         UUID userId = tokenService.validateRefreshToken(input.refreshToken());
 
@@ -51,6 +54,11 @@ public class RefreshTokenUseCaseImpl implements RefreshTokenUseCase {
 
         storedToken.revoke();
         refreshTokenRepository.save(storedToken);
+
+        sessionRepository.findById(storedToken.getSessionId()).ifPresent(session -> {
+            session.invalidate();
+            sessionRepository.save(session);
+        });
 
         User user = userRepository
                 .findById(userId)

@@ -48,8 +48,7 @@ public class OtpRepositoryImpl implements OtpRepository {
     @Override
     public Optional<Otp> findLatestByEmailAndType(String email, OtpType type) {
         return jpaRepository
-                .findByEmailAndType(email, OtpType.valueOf(
-                        type.name()))
+                .findByEmailAndType(email, type)
                 .map(mapper::toDomain);
     }
 
@@ -61,10 +60,11 @@ public class OtpRepositoryImpl implements OtpRepository {
     @Override
     @Transactional
     public void deleteByOwner(String email, OtpType type) {
-        jpaRepository.deleteByEmailAndType(email, OtpType.valueOf(type.name()));
+        jpaRepository.deleteByEmailAndType(email, type);
     }
 
     @Override
+    @Transactional
     public void deleteById(UUID id) {
         jpaRepository.deleteById(id);
     }

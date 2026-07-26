@@ -2,7 +2,6 @@ package io.gianmarco.pvd.infrastructure.useCases.auth;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.transaction.annotation.Transactional;
 
 import io.gianmarco.pvd.application.services.EmailService;
 import io.gianmarco.pvd.application.services.HashService;
@@ -33,7 +32,6 @@ import io.gianmarco.pvd.domain.repositories.user.UserRepository;
 public class AuthUseCaseConfig {
 
     @Bean
-    @Transactional
     public CreateUserUseCase createUserUseCase(
             UserRepository userRepository,
             OtpRepository otpRepository,
@@ -49,7 +47,6 @@ public class AuthUseCaseConfig {
     }
 
     @Bean
-    @Transactional
     public LoginUserUseCase loginUserUseCase(
             UserRepository userRepository,
             SessionRepository sessionRepository,
@@ -65,7 +62,6 @@ public class AuthUseCaseConfig {
     }
 
     @Bean
-    @Transactional
     public VerifyEmailUseCase verifyEmailUseCase(
             UserRepository userRepository,
             OtpRepository otpRepository,
@@ -83,7 +79,6 @@ public class AuthUseCaseConfig {
     }
 
     @Bean
-    @Transactional
     public ResendOtpUseCase resendOtpUseCase(
             UserRepository userRepository,
             OtpRepository otpRepository,
@@ -97,7 +92,6 @@ public class AuthUseCaseConfig {
     }
 
     @Bean
-    @Transactional
     public ForgotPasswordUseCase forgotPasswordUseCase(
             UserRepository userRepository,
             OtpRepository otpRepository,
@@ -111,7 +105,6 @@ public class AuthUseCaseConfig {
     }
 
     @Bean
-    @Transactional
     public ResetPasswordUseCase resetPasswordUseCase(
             UserRepository userRepository,
             RefreshTokenRepository refreshTokenRepository,
@@ -133,7 +126,6 @@ public class AuthUseCaseConfig {
     }
 
     @Bean
-    @Transactional
     public RefreshTokenUseCase refreshTokenUseCase(
             TokenService tokenService,
             RefreshTokenRepository refreshTokenRepository,
